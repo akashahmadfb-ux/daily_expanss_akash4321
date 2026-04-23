@@ -1,7 +1,0 @@
-{
-  "name": "@daily-expanss/ai",
-  "version": "0.1.0",
-  "main": "./src/index.ts",
-  "dependencies": { "openai": "^4.47.1" },
-  "devDependencies": { "typescript": "^5.4.5" }
-}
