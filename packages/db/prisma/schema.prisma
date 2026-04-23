@@ -1,0 +1,228 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Category {
+  university
+  personal
+  travel
+  food
+  loan
+  borrowed
+  salary
+  other
+}
+
+enum TransactionType {
+  income
+  expense
+}
+
+enum BudgetPeriod {
+  monthly
+  weekly
+}
+
+enum DebtType {
+  owed_to_me
+  i_owe
+}
+
+enum InsightType {
+  tip
+  warning
+  encouragement
+  achievement
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  name         String
+  avatar_url   String?
+  currency     String        @default("BDT")
+  level        Int           @default(1)
+  xp           Int           @default(0)
+  streak       Int           @default(0)
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+
+  transactions Transaction[]
+  budgets      Budget[]
+  savingsGoals SavingsGoal[]
+  debts        Debt[]
+  groupExpenses GroupExpense[]
+  aiInsights   AIInsight[]
+  userBadges   UserBadge[]
+
+  @@map("users")
+}
+
+model Transaction {
+  id           String          @id @default(uuid())
+  user_id      String
+  type         TransactionType
+  amount       Float
+  currency     String          @default("BDT")
+  category     Category
+  description  String
+  date         DateTime
+  receipt_url  String?
+  is_recurring Boolean         @default(false)
+  tags         String[]        @default([])
+  created_at   DateTime        @default(now())
+  updated_at   DateTime        @updatedAt
+
+  user         User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([date])
+  @@index([category])
+  @@map("transactions")
+}
+
+model Budget {
+  id           String       @id @default(uuid())
+  user_id      String
+  category     Category
+  limit_amount Float
+  spent_amount Float        @default(0)
+  period       BudgetPeriod @default(monthly)
+  currency     String       @default("BDT")
+  created_at   DateTime     @default(now())
+  updated_at   DateTime     @updatedAt
+
+  user         User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, category, period])
+  @@index([user_id])
+  @@map("budgets")
+}
+
+model SavingsGoal {
+  id             String   @id @default(uuid())
+  user_id        String
+  title          String
+  target_amount  Float
+  current_amount Float    @default(0)
+  currency       String   @default("BDT")
+  deadline       DateTime?
+  tree_stage     Int      @default(0)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  user           User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("savings_goals")
+}
+
+model Debt {
+  id                String   @id @default(uuid())
+  user_id           String
+  counterparty_name String
+  amount            Float
+  currency          String   @default("BDT")
+  type              DebtType
+  description       String?
+  is_settled        Boolean  @default(false)
+  due_date          DateTime?
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  user              User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("debts")
+}
+
+model GroupExpense {
+  id           String        @id @default(uuid())
+  title        String
+  total_amount Float
+  currency     String        @default("BDT")
+  created_by   String
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
+
+  creator      User          @relation(fields: [created_by], references: [id], onDelete: Cascade)
+  members      GroupMember[]
+  splits       Split[]
+
+  @@index([created_by])
+  @@map("group_expenses")
+}
+
+model GroupMember {
+  id             String       @id @default(uuid())
+  group_id       String
+  name           String
+  email          String?
+  avatar_url     String?
+
+  group          GroupExpense @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  splits         Split[]
+
+  @@index([group_id])
+  @@map("group_members")
+}
+
+model Split {
+  id         String       @id @default(uuid())
+  group_id   String
+  member_id  String
+  amount     Float
+  is_settled Boolean      @default(false)
+
+  group      GroupExpense @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  member     GroupMember  @relation(fields: [member_id], references: [id], onDelete: Cascade)
+
+  @@index([group_id])
+  @@index([member_id])
+  @@map("splits")
+}
+
+model Badge {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  description String
+  icon        String
+  xp_required Int         @default(0)
+  created_at  DateTime    @default(now())
+
+  userBadges  UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id          String   @id @default(uuid())
+  user_id     String
+  badge_id    String
+  unlocked_at DateTime @default(now())
+
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  badge       Badge    @relation(fields: [badge_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, badge_id])
+  @@index([user_id])
+  @@map("user_badges")
+}
+
+model AIInsight {
+  id         String      @id @default(uuid())
+  user_id    String
+  message    String
+  type       InsightType
+  created_at DateTime    @default(now())
+
+  user       User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("ai_insights")
+}

@@ -1,0 +1,50 @@
+{
+  "name": "@daily-expanss/web",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@daily-expanss/shared": "*",
+    "@daily-expanss/ui": "*",
+    "@daily-expanss/db": "*",
+    "@daily-expanss/ai": "*",
+    "next": "14.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "next-auth": "^4.24.7",
+    "@supabase/supabase-js": "^2.43.1",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "framer-motion": "^11.1.9",
+    "lottie-react": "^2.4.0",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.4.0",
+    "recharts": "^2.12.7",
+    "d3": "^7.9.0",
+    "zustand": "^4.5.2",
+    "@tanstack/react-query": "^5.40.0",
+    "react-hook-form": "^7.51.5",
+    "zod": "^3.23.8",
+    "@hookform/resolvers": "^3.6.0",
+    "axios": "^1.7.2",
+    "date-fns": "^3.6.0",
+    "pdfkit": "^0.15.0",
+    "xlsx": "^0.18.5",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/d3": "^7.4.3",
+    "typescript": "^5.4.5",
+    "tailwindcss": "^3.4.4",
+    "postcss": "^8.4.38",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.3"
+  }
+}
