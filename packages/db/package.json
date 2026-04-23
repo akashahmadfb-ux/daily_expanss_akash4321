@@ -1,0 +1,15 @@
+{
+  "name": "@daily-expanss/db",
+  "version": "0.1.0",
+  "main": "./src/index.ts",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.13.0",
+    "@supabase/supabase-js": "^2.43.1"
+  },
+  "devDependencies": { "prisma": "^5.13.0", "typescript": "^5.4.5" }
+}
